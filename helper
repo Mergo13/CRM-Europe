@@ -1,0 +1,21 @@
+crm-app/
+├── config/
+│   ├── db.php
+│   └── smtp.php
+├── includes/
+│   ├── header.php
+│   └── footer.php
+├── pages/
+│   ├── dashboard.php
+│   ├── register_client.php
+│   ├── clients.php
+│   ├── rechnung.php
+│   ├── angebot.php
+│   ├── mahnung.php
+│   └── get_client.php
+├── assets/
+│   ├── logo.png
+│   ├── style.css
+│   └── js/dashboard.js
+├── index.php
+└── install.sql

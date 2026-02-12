@@ -1,0 +1,9 @@
+/* List enhancements CSS: subtle unified look */
+.list-toolbar{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-bottom:12px}
+.table-compact{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(16,24,40,.03)}
+.table-compact th, .table-compact td{padding:.6rem .75rem;border-bottom:1px solid rgba(15,23,36,.06);vertical-align:middle}
+.table-compact th{background:#f8fafc;font-weight:600;font-size:.86rem;color:#374151}
+.action-icons button{border:0;background:transparent;padding:.2rem;margin-left:.35rem;cursor:pointer}
+.action-icons button:hover{transform:translateY(-1px)}
+.badge-muted{font-size:.75rem;color:#6b7280}
+@media (max-width:800px){ .table-compact thead{display:none} .table-compact tr{display:block;margin-bottom:.6rem} .table-compact td{display:flex;justify-content:space-between;padding:.6rem;border-bottom:1px solid rgba(15,23,36,.04)} .action-icons{margin-left:0} }

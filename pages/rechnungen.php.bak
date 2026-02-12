@@ -1,0 +1,150 @@
+
+<?php
+// pages/rechnungen.php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+include '../includes/header.php';
+require '../config/db.php';
+
+// --- Optional filter ---
+$filterClient = isset($_GET['client_id']) && is_numeric($_GET['client_id']) ? (int)$_GET['client_id'] : null;
+
+// --- Fetch Invoices ---
+try {
+    if ($filterClient) {
+        $stmt = $pdo->prepare("
+            SELECT r.*, 
+                   c.firma, c.name, c.email,
+                   (SELECT COUNT(*) FROM rechnungs_positionen rp WHERE rp.rechnung_id = r.id) AS positionen
+            FROM rechnungen r
+            LEFT JOIN clients c ON c.id = r.client_id
+            WHERE r.client_id = ?
+            ORDER BY r.datum DESC
+        ");
+        $stmt->execute([$filterClient]);
+    } else {
+        $stmt = $pdo->query("
+            SELECT r.*, 
+                   c.firma, c.name, c.email,
+                   (SELECT COUNT(*) FROM rechnungs_positionen rp WHERE rp.rechnung_id = r.id) AS positionen
+            FROM rechnungen r
+            LEFT JOIN clients c ON c.id = r.client_id
+            ORDER BY r.datum DESC
+        ");
+    }
+    $rechnungen = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $rechnungen = [];
+}
+
+?>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="bi bi-file-earmark-text"></i> Rechnungen</h2>
+        <a href="rechnung.php" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Neue Rechnung</a>
+    </div>
+
+    <?php if ($filterClient): ?>
+        <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Filter:</strong> Nur Rechnungen für Kunde #<?= htmlspecialchars($filterClient) ?>
+            </div>
+            <a href="rechnungen.php" class="btn btn-sm btn-outline-secondary">Filter entfernen</a>
+        </div>
+    <?php endif; ?>
+
+    <div class="card">
+        <div class="card-body">
+            <table id="rechnungenTable" class="table table-striped table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Kunde</th>
+                        <th>Rechnungsnummer</th>
+                        <th>Datum</th>
+                        <th>Status</th>
+                        <th>Betrag (€)</th>
+                        <th>Positionen</th>
+                        <th>PDF</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($rechnungen as $r): ?>
+                        <?php
+                            $kunde = htmlspecialchars($r['firma'] ?: $r['name'] ?: '—');
+                            $pdfPath = "/pdf/rechnung_" . $r['id'] . ".pdf";
+                            $statusBadge = $r['status'] === 'bezahlt'
+                                ? '<span class="badge bg-success">Bezahlt</span>'
+                                : '<span class="badge bg-warning text-dark">Offen</span>';
+                        ?>
+                        <tr>
+                            <td><?= $r['id'] ?></td>
+                            <td><?= $kunde ?></td>
+                            <td><?= htmlspecialchars($r['rechnungsnummer']) ?></td>
+                            <td><?= htmlspecialchars($r['datum']) ?></td>
+                            <td><?= $statusBadge ?></td>
+                            <td class="text-end"><?= number_format((float)$r['betrag'], 2, ',', '.') ?></td>
+                            <td class="text-center"><?= (int)$r['positionen'] ?></td>
+                            <td class="text-center">
+                                <?php if (file_exists(__DIR__ . '/../pdf/rechnung_' . $r['id'] . '.pdf')): ?>
+                                    <a href="<?= $pdfPath ?>" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="text-muted">—</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="rechnung.php?success=1&id=<?= $r['id'] ?>" class="btn btn-outline-secondary" title="Ansehen"><i class="bi bi-eye"></i></a>
+                                    <a href="rechnung.php?id=<?= $r['id'] ?>&edit=1" class="btn btn-outline-info" title="Bearbeiten"><i class="bi bi-pencil"></i></a>
+                                    <button class="btn btn-outline-danger" onclick="deleteRechnung(<?= $r['id'] ?>)" title="Löschen"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- DataTables (sortable, searchable) -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    $('#rechnungenTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/de-DE.json'
+        },
+        order: [[3, 'desc']]
+    });
+});
+
+function deleteRechnung(id) {
+    if (!confirm('Rechnung #' + id + ' wirklich löschen?')) return;
+    fetch('rechnung_delete.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'id=' + encodeURIComponent(id)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alert('Rechnung gelöscht.');
+            location.reload();
+        } else {
+            alert('Fehler: ' + (data.error || 'Unbekannter Fehler.'));
+        }
+    })
+    .catch(e => alert('Fehler beim Löschen: ' + e));
+}
+</script>
+
+<?php include '../includes/footer.php'; ?>

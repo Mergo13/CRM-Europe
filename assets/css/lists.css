@@ -1,0 +1,90 @@
+/* ======================================================
+   Shared List Pages UI
+   Applies to Angebote, Rechnungen, Kunden, etc.
+====================================================== */
+
+/* Identify list pages */
+[data-list-page] {
+    animation: fadeIn .2s ease-in;
+}
+
+/* ---------- Floating bulk bar ---------- */
+.bulk-actions {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(120%);
+    transition: all .25s ease;
+}
+
+.bulk-actions.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Mobile stacked layout */
+@media (max-width: 768px) {
+    .bulk-actions {
+        left: 0;
+        right: 0;
+        transform: translateY(120%);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .bulk-actions.visible {
+        transform: translateY(0);
+    }
+    .bulk-actions > div {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .bulk-actions .btn,
+    .bulk-actions select {
+        width: 100%;
+    }
+    .bulk-actions .vr {
+        display: none;
+    }
+}
+
+/* Disabled bulk buttons */
+.bulk-actions .btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+/* ---------- Animated selected count ---------- */
+.count-pulse {
+    animation: countPulse .18s ease-out;
+}
+
+@keyframes countPulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.12); }
+    100% { transform: scale(1); }
+}
+
+/* ---------- Inline row actions ---------- */
+.table tbody tr .btn-group {
+    opacity: 0;
+    transform: translateY(2px);
+    transition: opacity .12s ease, transform .12s ease;
+}
+
+.table tbody tr:hover .btn-group,
+.table tbody tr:focus-within .btn-group {
+    opacity: 1;
+    transform: none;
+}
+
+/* ---------- Dark mode refinements ---------- */
+:root[data-theme="dark"] .table thead th {
+    background: color-mix(in srgb, var(--color-surface) 88%, #000);
+}
+
+:root[data-theme="dark"] .table tbody tr:hover {
+    background: color-mix(in srgb, var(--color-surface) 82%, #000);
+}
+
+:root[data-theme="dark"] .bulk-actions {
+    background: color-mix(in srgb, var(--color-surface) 94%, #000);
+}

@@ -1,0 +1,37 @@
+Invoice QR code: files and responsibilities
+
+Primary QR logic
+- /pages/rechnung_body.php
+  Builds the EPC payload (beneficiary, IBAN, BIC, amount, reference), generates the QR PNG via Endroid QrCode, writes it to a temp directory, embeds it into the PDF, and registers the file for cleanup.
+
+Orchestration and runtime wiring
+- /pages/rechnung_pdf.php
+  Orchestrates invoice PDF generation, loads the invoice header (including Verwendungszweck), passes qr_debug, includes vendor autoload and the body template, and performs QR temp file cleanup after writing the PDF.
+
+Preconditions (data that QR depends on)
+- /pages/rechnung_save.php
+  Ensures a non-empty Verwendungszweck is stored for new invoices and computes totals; QR section requires a reference and gross > 0 to render.
+- /includes/tax.php
+  Provides VAT/tax logic used to compute totals; gross must be positive for QR to be enabled.
+
+Supporting runtime/files
+- /pages/helpers.php
+  Utility functions used during PDF generation (e.g., string encoding helpers and PDF path helpers).
+- /includes/pdf_branding.php
+  Fonts/branding setup required so text near the QR renders correctly.
+- /pages/base_template.php
+  Creates and configures the $pdf instance used to place the QR image on the page.
+- /config/db.php
+  Database bootstrap (PDO) used to load invoice data and company bank data.
+
+External dependency
+- /vendor/autoload.php (Endroid QrCode library)
+  Provides Endroid\QrCode\QrCode and Endroid\QrCode\Writer\PngWriter used to render the QR PNG.
+
+Data source (database)
+- Table settings_company (row id=1)
+  Supplies creditor_name/company_name (beneficiary), IBAN, and optional BIC used in the EPC payload.
+
+Temp/output locations
+- sys_get_temp_dir() (system temp) or /logs/qr_tmp as fallback
+  Target directory where the QR PNG is written before embedding into the PDF; files are scheduled for deletion via $GLOBALS['_qr_cleanup'] after the PDF is saved.

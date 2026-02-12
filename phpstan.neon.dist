@@ -1,0 +1,22 @@
+includes:
+	- vendor/autoload.php
+
+parameters:
+	level: 5
+	paths:
+		- includes
+		- pages
+		- config
+	excludePaths:
+		- vendor/*
+		- public/*
+		- assets/*
+		- bootstrap/*
+		- pdf/*
+		- pdfs/*
+		- scripts/*
+	ignoreErrors:
+		- '#Call to function enc\(\) not found#'
+		- '#Property .* does not exist on#'
+		- '#Access to an undefined property#'
+		treatPhpDocTypesAsCertain: false

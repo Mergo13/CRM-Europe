@@ -1,0 +1,431 @@
+/* assets/css/crm-ultimate.css */
+/* Ultimate Professional CRM Styles with Animations & Advanced Features */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+:root {
+    /* Advanced Color System */
+    --crm-primary: #667eea;
+    --crm-primary-rgb: 102, 126, 234;
+    --crm-secondary: #764ba2;
+    --crm-success: #10b981;
+    --crm-warning: #f59e0b;
+    --crm-danger: #ef4444;
+    --crm-info: #3b82f6;
+
+    /* Glass Morphism */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+    /* Advanced Gradients */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+
+    /* Neumorphism */
+    --neuro-light: #ffffff;
+    --neuro-dark: #d1d9e6;
+    --neuro-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+
+    /* Advanced Typography */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+}
+
+/* Ultimate Body & Layout */
+body {
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-normal);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Advanced Card System with Glass Morphism */
+.crm-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.crm-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+}
+
+.crm-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
+}
+
+/* Neumorphic Elements */
+.neuro-btn {
+    background: var(--neuro-light);
+    border-radius: 50px;
+    box-shadow: var(--neuro-shadow);
+    border: none;
+    padding: 12px 24px;
+    font-weight: var(--font-weight-medium);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.neuro-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    transition: all 0.5s ease;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.neuro-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.neuro-btn:hover {
+    color: white;
+    box-shadow: inset 20px 20px 60px #bebebe, inset -20px -20px 60px #ffffff;
+}
+
+.neuro-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* Advanced Quick Action Buttons */
+.crm-quick-action {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 20px;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.crm-quick-action::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.crm-quick-action:hover::before {
+    left: 100%;
+}
+
+.crm-quick-action:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+    color: white;
+}
+
+.crm-quick-action-icon {
+    font-size: 2.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Advanced Statistics Cards */
+.crm-stat-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.crm-stat-number {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-extrabold);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.crm-stat-label {
+    color: rgba(255,255,255,0.8);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.875rem;
+}
+
+.crm-stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--gradient-primary);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.crm-stat-card:hover::after {
+    transform: scaleX(1);
+}
+
+/* Professional Table Enhancements */
+.crm-table {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.crm-table thead {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}
+
+.crm-table th {
+    border: none;
+    padding: 20px 16px;
+    font-weight: var(--font-weight-semibold);
+    color: rgba(255,255,255,0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+}
+
+.crm-table td {
+    border: none;
+    padding: 16px;
+    color: rgba(255,255,255,0.8);
+    vertical-align: middle;
+}
+
+.crm-table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.crm-table tbody tr:hover {
+    background: rgba(255,255,255,0.1);
+    transform: scale(1.02);
+}
+
+/* Advanced Button System */
+.crm-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.crm-btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(var(--crm-primary-rgb), 0.4);
+}
+
+.crm-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--crm-primary-rgb), 0.6);
+    color: white;
+}
+
+/* Loading Animations */
+.crm-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: crm-spin 1s ease-in-out infinite;
+}
+
+@keyframes crm-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Floating Action Button */
+.crm-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 8px 25px rgba(var(--crm-primary-rgb), 0.4);
+    color: white;
+    font-size: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+}
+
+.crm-fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(var(--crm-primary-rgb), 0.6);
+}
+
+/* Advanced Notification System */
+.crm-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    min-width: 300px;
+    box-shadow: var(--glass-shadow);
+    transform: translateX(400px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1050;
+}
+
+.crm-notification.show {
+    transform: translateX(0);
+}
+
+/* Professional Search Bar */
+.crm-search {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 16px 24px;
+    color: white;
+    font-size: 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.crm-search::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+
+.crm-search:focus {
+    outline: none;
+    border-color: var(--crm-primary);
+    box-shadow: 0 0 0 3px rgba(var(--crm-primary-rgb), 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .crm-card {
+        border-radius: 16px;
+        margin: 10px;
+    }
+
+    .crm-stat-number {
+        font-size: 2rem;
+    }
+
+    .crm-fab {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --glass-bg: rgba(0, 0, 0, 0.2);
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* High Performance Animations */
+.crm-animate-fade-in {
+    animation: crmFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.crm-animate-slide-up {
+    animation: crmSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.crm-animate-scale-in {
+    animation: crmScaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes crmFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes crmSlideUp {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes crmScaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Print Styles */
+@media print {
+    .crm-card {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+    }
+}

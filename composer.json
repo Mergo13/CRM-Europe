@@ -1,0 +1,37 @@
+{
+  "name": "visionlt/rechnung-app",
+  "description": "Lightweight PHP invoicing/ERP app with PDF generation and simple CRM features.",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "phpmailer/phpmailer": "^7.0",
+    "setasign/fpdf": "1.8.6",
+    "mpdf/mpdf": "^8.2",
+    "google/analytics-data": "^0.23.1",
+    "ext-pdo": "*",
+    "endroid/qr-code": "^6.1",
+    "ext-iconv": "*",
+    "nesbot/carbon": "^3.10",
+    "vlucas/phpdotenv": "^5.6"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.9",
+    "phpstan/phpstan": "^1.11"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "scripts": {
+    "lint": "phpcs -q",
+    "analyse": "phpstan analyse -c phpstan.neon.dist",
+    "validate": "composer validate --strict"
+  },
+  "authors": [
+    {
+      "name": "Vision L&T GmbH",
+      "email": "info@vision-lt.de"
+    }
+  ],
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

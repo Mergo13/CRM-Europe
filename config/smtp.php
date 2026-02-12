@@ -1,0 +1,93 @@
+<?php
+// config/smtp.php.dist
+// Sample SMTP configuration using PHPMailer. Copy this file to config/smtp.php
+// and adjust credentials. For local development we recommend Mailpit or Mailhog.
+// Mailpit defaults: SMTP on localhost:1025, Web UI http://localhost:8025
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+if (!class_exists(PHPMailer::class)) {
+    // try to load via Composer if not already loaded
+    $autoload = __DIR__ . '/../vendor/autoload.php';
+    if (is_file($autoload)) { require_once $autoload; }
+}
+
+if (!function_exists('getenv_bool')) {
+    function getenv_bool(string $key, bool $default = false): bool {
+        $v = getenv($key);
+        if ($v === false || $v === null) return $default;
+        $s = strtolower(trim((string)$v));
+        return in_array($s, ['1','true','yes','on'], true);
+    }
+}
+
+if (!function_exists('env_or')) {
+    function env_or(string $key, $default = null) {
+        $v = getenv($key);
+        return ($v === false || $v === null) ? $default : $v;
+    }
+}
+
+if (!function_exists('getMailer')) {
+    /**
+     * Return a configured PHPMailer instance.
+     * Configure via environment variables or edit below and copy to smtp.php.
+     *
+     * ENV VARS (examples):
+      APP_ENV=dev
+     *  SMTP_HOST=127.0.0.1
+     *  SMTP_PORT=1025
+     *  SMTP_USER=
+     *  SMTP_PASS=
+     *  SMTP_SECURE=none   ; tls|ssl|none
+     *  SMTP_FROM=noreply@example.com
+     *  SMTP_FROM_NAME=Rechnung App
+     */
+    function getMailer(): PHPMailer {
+        $mail = new PHPMailer(true);
+
+        // Default to SMTP for reliability
+        $mail->isSMTP();
+
+        // Decide defaults based on APP_ENV
+        $appEnv = strtolower((string)env_or('APP_ENV', 'dev'));
+        $isDev = ($appEnv === 'dev' || $appEnv === 'local' || $appEnv === 'development');
+
+        $host   = (string)env_or('SMTP_HOST', $isDev ? '127.0.0.1' : 'smtp.example.com');
+        $port   = (int)env_or('SMTP_PORT', $isDev ? 1025 : 587);
+        $user   = (string)env_or('SMTP_USER', '');
+        $pass   = (string)env_or('SMTP_PASS', '');
+        $secure = strtolower((string)env_or('SMTP_SECURE', $isDev ? 'none' : 'tls'));
+
+        $mail->Host = $host;
+        $mail->Port = $port;
+        if ($secure === 'ssl') { $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; }
+        elseif ($secure === 'tls') { $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; }
+        else { $mail->SMTPSecure = false; }
+
+        // Auth only if user provided
+        if ($user !== '') {
+            $mail->SMTPAuth = true;
+            $mail->Username = $user;
+            $mail->Password = $pass;
+        } else {
+            $mail->SMTPAuth = false; // e.g., Mailpit
+        }
+
+        // From headers
+        $mail->setFrom((string)env_or('SMTP_FROM', 'noreply@example.com'), (string)env_or('SMTP_FROM_NAME', 'Rechnung App'));
+
+        // Charset/encoding
+        $mail->CharSet = 'UTF-8';
+        $mail->Encoding = 'base64';
+
+        // Optional verbose debug in dev
+        if ($isDev && getenv_bool('SMTP_DEBUG', false)) {
+            $mail->SMTPDebug = SMTP::DEBUG_SERVER; // 2
+        }
+
+        return $mail;
+    }
+}

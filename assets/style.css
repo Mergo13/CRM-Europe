@@ -1,0 +1,19 @@
+
+
+/* Simple UI animations */
+.fade-in {
+  animation: fadeIn 600ms ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-metric { transition: transform 220ms ease, box-shadow 220ms ease; }
+.card-metric:hover { transform: translateY(-6px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+
+/* File list styling */
+.file-list { list-style: none; padding: 0; margin: 0; }
+.file-list li { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); display:flex; justify-content:space-between; align-items:center; }
+.file-meta { font-size:0.85rem; color: #666; }
+

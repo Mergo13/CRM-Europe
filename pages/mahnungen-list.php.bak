@@ -1,0 +1,100 @@
+<?php
+// pages/mahnungen-list.php
+// Reminders (Mahnungen) list — filter by reminder level, mark as sent, print reminders.
+// Requires: config/db.php, assets/js/lists.shared.js, assets/css/lists.css
+
+require_once __DIR__ . '/../config/db.php';
+?><!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mahnungen — Liste</title>
+  <link rel="stylesheet" href="/assets/css/lists.css">
+</head>
+<body>
+  <main class="container">
+    <header class="toolbar">
+      <h1>Mahnungen</h1>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Suche nach Nummer, Kunde oder Text" />
+        <select id="filter-status">
+          <option value="">Alle</option>
+          <option value="pending">Ausstehend</option>
+          <option value="sent">Versendet</option>
+        </select>
+        <select id="filter-level">
+          <option value="">Alle Mahnstufen</option>
+          <option value="1">1. Mahnung</option>
+          <option value="2">2. Mahnung</option>
+          <option value="3">3. Mahnung</option>
+        </select>
+        <button id="export-csv">Export CSV</button>
+      </div>
+    </header>
+
+    <section>
+      <table id="list-table" class="striped">
+        <thead>
+          <tr>
+            <th><input id="select-all" type="checkbox"></th>
+            <th data-sort="nummer">Nummer</th>
+            <th data-sort="kunde">Kunde</th>
+            <th data-sort="betrag">Betrag</th>
+            <th data-sort="level">Mahnstufe</th>
+            <th data-sort="status">Status</th>
+            <th>Aktionen</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="pagination">
+        <button id="prev-page">← Vorherige</button>
+        <span id="page-info">Seite 1</span>
+        <button id="next-page">Nächste →</button>
+      </div>
+
+      <div class="bulk-actions" id="floatingActions">        <button id="bulk-mark">Als versendet markieren</button>
+        <button id="bulk-delete">Löschen</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close">✕</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    // LIST config for mahnungen
+    window.LIST_CONFIG = {
+      api_list: '/pages/api/mahnungen_list.php',
+      api_get: '/pages/api/mahnung_get.php',
+      api_bulk: '/pages/api/mahnungen_bulk.php',
+      api_export: '/pages/api/mahnungen_export.php',
+      pdf_url: '/pages/mahnung_pdf.php',
+      per_page: 25,
+      default_sort: 'level'
+    };
+
+    // Push extra filter into a global so shared script can pick it up if needed
+    (function () {
+      const levelSelect = document.getElementById('filter-level');
+      if (!levelSelect) return;
+      levelSelect.addEventListener('change', function () {
+        window.LIST_EXTRA = window.LIST_EXTRA || {};
+        window.LIST_EXTRA.level = levelSelect.value;
+      });
+    })();
+  </script>
+
+  <script src="/assets/js/lists.shared.js"></script>
+  <script src="/assets/js/lists.shared.create.link.js"></script>
+  <script src="/assets/js/lists.fix-links.js"></script>
+
+<?php if(function_exists('renderPdfModalAssets')) echo renderPdfModalAssets(); ?>
+</body>
+</html>

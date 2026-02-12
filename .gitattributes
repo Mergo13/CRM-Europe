@@ -1,0 +1,23 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Treat these as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.ttf binary
+*.z binary
+
+# Exclude non-essential files from export archives
+/.idea export-ignore
+/tests export-ignore
+/.github export-ignore
+/.editorconfig export-ignore
+/phpstan.neon.dist export-ignore
+/phpcs.xml export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/docs export-ignore
+/scripts/SMOKE_*.md export-ignore

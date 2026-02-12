@@ -1,0 +1,352 @@
+/* Global Design System — Vision L&T CRM
+   One stylesheet for light/dark themes and reusable components
+   Theme switching: <html data-theme="light|dark"> (persisted via localStorage)
+*/
+
+/* 1) Design Tokens: colors, spacing, radii, shadows */
+:root {
+  /* Base palette — Light */
+  --color-bg: #f6f8fb;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0f3f8;
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+  --color-border: #e2e8f0;
+  --color-primary: #2563eb;  /* blue-600 */
+  --color-primary-contrast: #ffffff;
+  --color-accent: #38bdf8;   /* sky-400 */
+  --color-danger: #ef4444;   /* red-500 */
+  --color-success: #22c55e;  /* green-500 */
+  --color-warning: #f59e0b;  /* amber-500 */
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md: 0 6px 20px rgba(0,0,0,.08);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,.12);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+
+  /* Bootstrap variable hooks */
+  --bs-body-bg: var(--color-bg);
+  --bs-body-color: var(--color-text);
+  --bs-primary: var(--color-primary);
+  --bs-primary-rgb: 37, 99, 235;
+}
+
+/***** Dark Theme *****/
+:root[data-theme="dark"] {
+  --color-bg: #0b1220;         /* deep navy */
+  --color-surface: #0f172a;    /* slate-900 */
+  --color-surface-2: #111827;  /* darker layer */
+  --color-text: #e5e7eb;
+  --color-text-muted: #9aa4b2;
+  --color-border: #1f2937;
+  --color-primary: #60a5fa;    /* blue-400 */
+  --color-primary-contrast: #0b1220;
+  --color-accent: #38bdf8;
+  --color-danger: #f87171;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-md: 0 8px 22px rgba(0,0,0,.5);
+  --shadow-lg: 0 18px 40px rgba(0,0,0,.55);
+}
+
+/* 2) Base */
+html, body { height: 100%; }
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  letter-spacing: .2px;
+}
+
+/* Links */
+a { color: var(--color-primary); }
+a:hover { color: color-mix(in srgb, var(--color-primary) 88%, #000); }
+
+/* 3) Header/Navbar */
+.crm-navbar {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.crm-navbar .navbar-brand span { font-weight: 700; letter-spacing: .4px; }
+.crm-navbar .nav-link { color: var(--color-text); opacity: .9; }
+.crm-navbar .nav-link:hover { opacity: 1; }
+.crm-navbar .nav-link.active { font-weight: 600; color: var(--color-accent); }
+.brand-animated { transition: transform .2s ease; }
+.brand-animated:hover { transform: rotate(-4deg) scale(1.05); }
+
+/* Navbar toggler icon visibility for both themes */
+.navbar .navbar-toggler { border: none; }
+.navbar .navbar-toggler:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent); }
+.navbar .navbar-toggler-icon { background-size: 1.5em 1.5em; }
+/* Light */
+:root .navbar .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%230f172a' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+/* Dark */
+:root[data-theme='dark'] .navbar .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23e5e7eb' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+
+.user-chip { display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; border:1px solid var(--color-border); color:inherit; font-size:.9rem; }
+.theme-toggle { background:none; border:none; color:inherit; font-size:1.2rem; }
+
+/* 4) Page titles */
+.page-title { font-size: clamp(1.4rem, 1.1rem + 1vw, 2rem); font-weight: 700; margin: var(--space-6) 0 var(--space-1); }
+.page-sub { color: var(--color-text-muted); margin-bottom: var(--space-5); }
+
+/* 5) Cards */
+.card { background: var(--color-surface); border:1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+.card .card-header { background: transparent; border-bottom:1px solid var(--color-border); }
+.ds-card { background: var(--color-surface); border:1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-5); box-shadow: var(--shadow-md); }
+
+/* KPI specific */
+.kpi-card { cursor: pointer; transition: transform .12s ease, box-shadow .12s ease; }
+.kpi-card:active { transform: scale(0.98); }
+.kpi-label { color: var(--color-text-muted); font-size: .9rem; margin-bottom: 4px; }
+.kpi-value { font-size: 1.4rem; font-weight: 700; }
+
+/* Action grid/cards */
+.action-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; }
+.action-card { background: var(--color-surface-2); border:1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px; text-align:center; cursor:pointer; transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease; box-shadow: var(--shadow-sm); user-select: none; color: inherit; }
+.action-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.action-card:active { transform: scale(0.98); }
+.action-icon { font-size: 1.8rem; margin-bottom: 6px; }
+.action-title { font-weight: 600; font-size: .95rem; }
+.action-sub { font-size: .75rem; color: var(--color-text-muted); }
+
+/* 6) Tables */
+.table { --tbl-border: var(--color-border); --tbl-head-bg: color-mix(in srgb, var(--color-surface) 96%, #000); --tbl-head-color: var(--color-text-muted); color: inherit; }
+.table thead th { background: var(--tbl-head-bg); color: var(--tbl-head-color); border-bottom:1px solid var(--color-border); }
+.table tbody td { border-top: 1px solid var(--color-border); }
+.table-hover tbody tr:hover { background: color-mix(in srgb, var(--color-surface) 92%, #000); }
+
+/* DataTables compatibility */
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input { background: var(--color-surface); color: inherit; border:1px solid var(--color-border); border-radius: var(--radius-sm); }
+
+/* 7) Buttons */
+.btn-primary { --bs-btn-bg: var(--color-primary); --bs-btn-border-color: var(--color-primary); --bs-btn-hover-bg: color-mix(in srgb, var(--color-primary) 88%, #000); --bs-btn-hover-border-color: color-mix(in srgb, var(--color-primary) 88%, #000); --bs-btn-active-bg: color-mix(in srgb, var(--color-primary) 76%, #000); --bs-btn-active-border-color: color-mix(in srgb, var(--color-primary) 76%, #000); --bs-btn-color: var(--color-primary-contrast); }
+.btn-outline-secondary { --bs-btn-color: var(--color-text); --bs-btn-border-color: var(--color-border); --bs-btn-hover-bg: var(--color-surface-2); --bs-btn-hover-border-color: var(--color-border); }
+.btn-danger { --bs-btn-bg: var(--color-danger); --bs-btn-border-color: var(--color-danger); }
+.btn-success { --bs-btn-bg: var(--color-success); --bs-btn-border-color: var(--color-success); }
+
+/* Icon-only buttons */
+.btn-icon { width: 36px; height: 36px; display:inline-flex; align-items:center; justify-content:center; border-radius: 10px; }
+
+/* 8) Forms */
+.form-control, .form-select, textarea { background: var(--color-surface); color: inherit; border:1px solid var(--color-border); border-radius: var(--radius-sm); }
+.form-control:focus, .form-select:focus, textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 30%, transparent); }
+.input-group-text { background: var(--color-surface-2); color: inherit; border:1px solid var(--color-border); }
+
+/* 9) Badges */
+.badge { border:1px solid transparent; }
+.badge.bg-success { background-color: color-mix(in srgb, var(--color-success) 18%, transparent) !important; color: var(--color-success); border-color: color-mix(in srgb, var(--color-success) 40%, transparent); }
+.badge.bg-danger { background-color: color-mix(in srgb, var(--color-danger) 18%, transparent) !important; color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 40%, transparent); }
+.badge.bg-warning { background-color: color-mix(in srgb, var(--color-warning) 18%, transparent) !important; color: var(--color-warning); border-color: color-mix(in srgb, var(--color-warning) 40%, transparent); }
+.badge.bg-primary { background-color: color-mix(in srgb, var(--color-primary) 18%, transparent) !important; color: var(--color-primary); border-color: color-mix(in srgb, var(--color-primary) 40%, transparent); }
+
+/* 10) Modals */
+.modal-content { background: var(--color-surface); border:1px solid var(--color-border); box-shadow: var(--shadow-lg); }
+.modal-header { border-bottom:1px solid var(--color-border); }
+.modal-footer { border-top:1px solid var(--color-border); }
+
+/* 11) Alerts */
+.alert { border-radius: var(--radius-sm); border:1px solid var(--color-border); }
+.alert-primary { background: color-mix(in srgb, var(--color-primary) 10%, transparent); color: var(--color-text); border-color: color-mix(in srgb, var(--color-primary) 30%, transparent); }
+.alert-danger { background: color-mix(in srgb, var(--color-danger) 10%, transparent); color: var(--color-text); border-color: color-mix(in srgb, var(--color-danger) 30%, transparent); }
+.alert-success { background: color-mix(in srgb, var(--color-success) 10%, transparent); color: var(--color-text); border-color: color-mix(in srgb, var(--color-success) 30%, transparent); }
+
+/* 12) Utilities */
+.border-subtle { border-color: var(--color-border) !important; }
+.text-muted-strong { color: var(--color-text-muted) !important; }
+.shadow-soft { box-shadow: var(--shadow-md) !important; }
+.rounded-md { border-radius: var(--radius-md) !important; }
+
+/* 13) Dashboard-specific helpers */
+.fab { position: fixed; right: 22px; bottom: 22px; width: 56px; height: 56px; border-radius: 50%; background: var(--color-primary); color: var(--color-primary-contrast) !important; display:flex; align-items:center; justify-content:center; box-shadow: var(--shadow-lg); }
+.fab i { font-size: 1.6rem; }
+
+#invoiceListWrap { animation: fadeIn .2s ease-in; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+
+/* 14) Touch targets and buttons */
+.btn, .btn-icon { min-height: 44px; }
+.btn-touch { min-height: 44px; }
+.btn-group-touch { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn i { margin-right: 6px; }
+
+/* Increase table cell padding for touch */
+.table td, .table th { padding: 0.9rem 0.75rem; }
+
+/* 15) Avatars */
+.avatar-circle { width: 40px; height: 40px; border-radius: 50%; display:inline-flex; align-items:center; justify-content:center; background: var(--color-primary); color: var(--color-primary-contrast); font-weight: 700; }
+.client-avatar { width: 40px; height: 40px; border-radius: 50%; display:inline-flex; align-items:center; justify-content:center; background: var(--color-primary); color: var(--color-primary-contrast); font-weight: 700; }
+
+/* 16) Quick action buttons */
+.quick-action-btn { width: 36px; height: 36px; border-radius: 10px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--color-border); background: var(--color-surface-2); color: inherit; }
+.quick-action-btn:hover { background: color-mix(in srgb, var(--color-surface) 90%, #000); }
+
+
+/* 17) Footer */
+.app-footer { border-top:1px solid var(--color-border); background: var(--color-surface); }
+
+
+/* 18) Legacy compatibility + common page containers */
+/* Map older classes used across pages to design tokens without changing markup */
+.card-dark { background: var(--color-surface); border:1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-5); box-shadow: var(--shadow-md); }
+.toolbar { background: var(--color-surface); color: var(--color-text); border:1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+.quick-actions { background: var(--color-surface); color: inherit; border:1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+.stats-card { background: var(--color-surface); color: inherit; border:1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+.table-container { background: var(--color-surface); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+.bulk-actions { background: var(--color-surface); color: inherit; border:1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-md); }
+
+/* Harmonize Bootstrap light button with themes */
+.btn-light { --bs-btn-bg: var(--color-surface-2); --bs-btn-border-color: var(--color-border); --bs-btn-color: var(--color-text); --bs-btn-hover-bg: color-mix(in srgb, var(--color-surface) 92%, #000); --bs-btn-hover-border-color: var(--color-border); }
+
+/* ======================================================
+   Angebote List – Page-specific styling
+   Uses existing Vision L&T design tokens
+====================================================== */
+
+/* Page container rhythm */
+main.container-fluid {
+  animation: fadeIn .2s ease-in;
+}
+
+/* Header / toolbar refinement */
+.toolbar h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+/* Quick actions block */
+.quick-actions {
+  padding: var(--space-4);
+}
+
+/* Stats cards — align with KPI cards */
+.stats-card {
+  cursor: default;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stats-number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+/* Table spacing + hierarchy */
+.table-container {
+  overflow: hidden;
+}
+
+.table thead th {
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.table tbody tr {
+  transition: background .12s ease;
+}
+
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-surface) 94%, #000);
+}
+
+/* Amount column emphasis */
+.table td.text-end strong {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+/* Status badges — mapped to your design tokens */
+.status-badge {
+  padding: .35em .7em;
+  border-radius: 999px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  border: 1px solid transparent;
+}
+
+.status-open {
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 32%, transparent);
+}
+
+.status-accepted {
+  background: color-mix(in srgb, var(--color-success) 16%, transparent);
+  color: var(--color-success);
+  border-color: color-mix(in srgb, var(--color-success) 36%, transparent);
+}
+
+.status-expired {
+  background: color-mix(in srgb, var(--color-text-muted) 18%, transparent);
+  color: var(--color-text-muted);
+  border-color: color-mix(in srgb, var(--color-text-muted) 36%, transparent);
+}
+
+.status-rejected {
+  background: color-mix(in srgb, var(--color-danger) 16%, transparent);
+  color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 36%, transparent);
+}
+
+/* Action buttons inside table */
+.table .btn-group .btn {
+  border-radius: 10px;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.table .btn-group .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Floating bulk actions — CRM style */
+.bulk-actions {
+  backdrop-filter: blur(8px);
+}
+
+.bulk-actions .btn {
+  font-weight: 500;
+}
+
+/* Pagination polish */
+.pagination-controls .btn {
+  min-height: 40px;
+}
+
+/* Loading overlay card */
+#loadingOverlay > div {
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+}
+
+/* Notification stack spacing */
+.notification .alert + .alert {
+  margin-top: 8px;
+}

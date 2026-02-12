@@ -1,0 +1,150 @@
+<!-- diagnostic_snippet.html - paste into <head> BEFORE other scripts -->
+<script>
+(function () {
+  'use strict';
+  function showOverlay(title, details) {
+    try {
+      let ov = document.getElementById('diag-overlay');
+      if (!ov) {
+        ov = document.createElement('div');
+        ov.id = 'diag-overlay';
+        ov.style.position = 'fixed';
+        ov.style.right = '12px';
+        ov.style.bottom = '12px';
+        ov.style.zIndex = 2147483647;
+        ov.style.maxWidth = 'min(80vw,600px)';
+        ov.style.background = 'rgba(0,0,0,0.8)';
+        ov.style.color = '#fff';
+        ov.style.fontFamily = 'monospace';
+        ov.style.fontSize = '13px';
+        ov.style.padding = '12px';
+        ov.style.borderRadius = '8px';
+        ov.style.boxShadow = '0 6px 20px rgba(0,0,0,0.5)';
+        ov.style.whiteSpace = 'pre-wrap';
+        ov.style.lineHeight = '1.2';
+        ov.style.backdropFilter = 'blur(4px)';
+        document.body.appendChild(ov);
+      }
+      ov.innerText = title + '\\n\\n' + details + '\\n\\n(Click to dismiss)';
+      ov.onclick = () => ov.remove();
+    } catch (e) { console.warn('overlay error', e); }
+  }
+
+  (function wrapJSONParse() {
+    if (!window.JSON) return;
+    const orig = JSON.parse;
+    JSON.parse = function (text, reviver) {
+      try {
+        return orig.call(JSON, text, reviver);
+      } catch (err) {
+        try {
+          console.groupCollapsed('[DIAG] JSON.parse threw:', err && err.message);
+          console.error('Input to JSON.parse (length=' + (text && text.length) + '):', text);
+          console.trace();
+          console.groupEnd();
+          showOverlay('JSON.parse failed', (err && err.message) + '\\n\\n' + String(text).slice(0, 2000));
+        } catch (e) {}
+        throw err;
+      }
+    };
+  })();
+
+  (function wrapURL() {
+    try {
+      if (!window.URL) return;
+      const OrigURL = window.URL;
+      function WrappedURL(url, base) {
+        try { return new OrigURL(url, base); } catch (err) {
+          try {
+            console.groupCollapsed('[DIAG] new URL() threw:', err && err.message);
+            console.error('URL arg:', url, 'base:', base);
+            console.trace();
+            console.groupEnd();
+            showOverlay('new URL() failed', (err && err.message) + '\\n\\nURL:' + String(url).slice(0,2000) + '\\nbase:' + String(base || ''));
+          } catch (e) {}
+          throw err;
+        }
+      }
+      WrappedURL.prototype = OrigURL.prototype;
+      Object.getOwnPropertyNames(OrigURL).forEach(function (k) {
+        try { WrappedURL[k] = OrigURL[k]; } catch (e) {}
+      });
+      window.URL = WrappedURL;
+    } catch (e) { console.warn('wrapURL failed', e); }
+  })();
+
+  (function wrapRegExp() {
+    try {
+      const OrigRegExp = RegExp;
+      function WrappedRegExp(pattern, flags) {
+        try { return new OrigRegExp(pattern, flags); } catch (err) {
+          try {
+            console.groupCollapsed('[DIAG] RegExp threw:', err && err.message);
+            console.error('pattern:', pattern, 'flags:', flags);
+            console.trace();
+            console.groupEnd();
+            showOverlay('RegExp failed', (err && err.message) + '\\n\\npattern: ' + String(pattern).slice(0,1000) + '\\nflags: ' + String(flags||''));
+          } catch (e) {}
+          throw err;
+        }
+      }
+      WrappedRegExp.prototype = OrigRegExp.prototype;
+      Object.getOwnPropertyNames(OrigRegExp).forEach(function (k) {
+        try { WrappedRegExp[k] = OrigRegExp[k]; } catch (e) {}
+      });
+      window.RegExp = WrappedRegExp;
+    } catch (e) { console.warn('wrapRegExp failed', e); }
+  })();
+
+  (function wrapQuerySelector() {
+    try {
+      const docProto = Document.prototype;
+      const origQS = docProto.querySelector;
+      const origQSA = docProto.querySelectorAll;
+      docProto.querySelector = function (selector) {
+        try { return origQS.call(this, selector); } catch (err) {
+          try {
+            console.groupCollapsed('[DIAG] querySelector threw:', err && err.message);
+            console.error('selector:', selector);
+            console.trace();
+            console.groupEnd();
+            showOverlay('querySelector failed', (err && err.message) + '\\n\\nselector: ' + String(selector).slice(0,1000));
+          } catch (e) {}
+          throw err;
+        }
+      };
+      docProto.querySelectorAll = function (selector) {
+        try { return origQSA.call(this, selector); } catch (err) {
+          try {
+            console.groupCollapsed('[DIAG] querySelectorAll threw:', err && err.message);
+            console.error('selector:', selector);
+            console.trace();
+            console.groupEnd();
+            showOverlay('querySelectorAll failed', (err && err.message) + '\\n\\nselector: ' + String(selector).slice(0,1000));
+          } catch (e) {}
+          throw err;
+        }
+      };
+    } catch (e) { console.warn('wrapQuerySelector failed', e); }
+  })();
+
+  window.addEventListener('error', function (ev) {
+    try {
+      const msg = ev && ev.message ? ev.message : String(ev);
+      const stack = ev && ev.error && ev.error.stack ? ev.error.stack : (ev && ev.filename ? (ev.filename + ':' + ev.lineno + ':' + ev.colno) : 'no-stack');
+      console.error('[DIAG] window.onerror', msg, stack, ev);
+      showOverlay('Uncaught error: ' + msg, String(stack).slice(0,3000));
+    } catch (e) {}
+  });
+
+  window.addEventListener('unhandledrejection', function (ev) {
+    try {
+      const reason = ev && ev.reason ? ev.reason : ev;
+      console.error('[DIAG] UnhandledPromiseRejection', reason);
+      let details = (reason && reason.stack) ? reason.stack : String(reason);
+      showOverlay('Unhandled Promise Rejection', String(details).slice(0,3000));
+    } catch (e) {}
+  });
+
+  console.info('[DIAG] Diagnostic wrappers installed: JSON.parse, URL, RegExp, querySelector.');
+})();</script>
