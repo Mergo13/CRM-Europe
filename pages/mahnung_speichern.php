@@ -13,7 +13,7 @@
  * - Expects vendor autoload and FPDF in ../vendor/...
  * - Produces robust PDF URL using DOCUMENT_ROOT when possible to avoid repeated "pages/" segments
  */
-$GLOBALS['PDF_UNICODE'] = true;
+$GLOBALS['PDF_UNICODE'] = false;
 header('Content-Type: application/json; charset=utf-8');
 
 // Allow both manual (web) POST and automated (CLI/cron) usage.

@@ -17,23 +17,28 @@ declare(strict_types=1);
 if (!function_exists('pdf_branding_text')) {
     function pdf_branding_text(string $text): string
     {
-        // If Unicode TTF mode is enabled globally, return UTF-8 as-is
-        if (!empty($GLOBALS['PDF_UNICODE'])) {
-            return $text;
-        }
-        // Classic FPDF single-byte fonts: convert UTF-8 to Windows-1252 without transliteration.
-        // German umlauts and € exist in CP1252 and are preserved with //IGNORE.
-        $out = @iconv('UTF-8', 'Windows-1252//IGNORE', $text);
-        if ($out === false || $out === null || $out === '') {
-            // Fallback to ISO-8859-1 if iconv not available or failed
-            if (function_exists('mb_convert_encoding')) {
-                $out = @mb_convert_encoding($text, 'ISO-8859-1', 'UTF-8');
-            }
-            if ($out === false || $out === null) {
-                // Last resort: replace non-ASCII with '?'
-                $out = preg_replace('/[^\x20-\x7E]/', '?', $text) ?? '';
+        // Normalize input to UTF-8 first (DB data is often Win-1252/Latin1)
+        if (function_exists('mb_check_encoding') && !mb_check_encoding($text, 'UTF-8')) {
+            // Assume Windows-1252 if it's not UTF-8
+            $fixed = @iconv('Windows-1252', 'UTF-8//IGNORE', $text);
+            if ($fixed !== false && $fixed !== null && $fixed !== '') {
+                $text = $fixed;
             }
         }
+
+        // For classic FPDF output: convert UTF-8 -> Windows-1252
+        // (German umlauts are representable in CP1252, so they should survive)
+        $out = @iconv('UTF-8', 'Windows-1252//TRANSLIT', $text);
+
+        if ($out === false || $out === null) {
+            // Fallback: keep as much as possible
+            $out = @iconv('UTF-8', 'Windows-1252//IGNORE', $text);
+        }
+
+        if ($out === false || $out === null) {
+            $out = preg_replace('/[^\x20-\x7E]/', '?', $text) ?? '';
+        }
+
         return $out;
     }
 }

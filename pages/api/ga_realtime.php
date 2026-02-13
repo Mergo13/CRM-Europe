@@ -10,7 +10,7 @@ error_reporting(0); // do not emit warnings/notices into JSON output in producti
 // Optional: enable CORS for testing (adjust or remove in production)
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json; charset=utf-8');
-$GLOBALS['PDF_UNICODE'] = true;
+$GLOBALS['PDF_UNICODE'] = false;
 // Start output buffering to catch / remove accidental output (warnings, BOM, etc.)
 ob_start();
 

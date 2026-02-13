@@ -15,7 +15,9 @@ if ($devMode) {
 header('Content-Type: application/json; charset=utf-8');
 
 $logFile = __DIR__ . '/../../logs/api_rechnungen_bulk_debug.log';
-@mkdir(dirname($logFile), 0750, true);
+if (!mkdir($concurrentDirectory = dirname($logFile), 0750, true) && !is_dir($concurrentDirectory)) {
+    throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+}
 
 function respond($data, $http = 200) {
     http_response_code($http);
@@ -50,7 +52,7 @@ function has_table(PDO $pdo, string $table): bool {
 
 try {
     // Expect config/db.php to RETURN the PDO instance: $pdo = require_once(...);
-    $pdo = require_once __DIR__ . '/../../config/db.php';
+    $pdo = require __DIR__ . '/../../config/db.php';
     // fallback: maybe config set $GLOBALS['pdo']
     if (!($pdo instanceof PDO) && isset($GLOBALS['pdo']) && $GLOBALS['pdo'] instanceof PDO) {
         $pdo = $GLOBALS['pdo'];
