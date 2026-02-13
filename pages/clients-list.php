@@ -26,7 +26,7 @@ try {
 
     if ($hasInvoices) {
         $query = "
-            SELECT 
+            SELECT
                 c.*,
                 /* totals via correlated subqueries to avoid ONLY_FULL_GROUP_BY issues */
                 (SELECT COUNT(DISTINCT r1.id) FROM rechnungen r1 WHERE r1.client_id = c.id) AS total_rechnungen,
@@ -40,7 +40,7 @@ try {
     } else {
         // Fallback without invoices table
         $query = "
-            SELECT 
+            SELECT
                 c.*,
                 0 AS total_rechnungen,
                 0 AS open_rechnungen,
@@ -77,7 +77,7 @@ try {
         'total_revenue' => array_sum(array_map(fn($x) => (float)($x['paid_amount'] ?? 0), $clients)),
         'open_amount' => array_sum(array_map(fn($x) => (float)($x['open_amount'] ?? 0), $clients)),
     ];
-    
+
 } catch (Exception $e) {
     $clients = [];
     $stats = ['total' => 0, 'with_invoices' => 0, 'with_open' => 0, 'total_revenue' => 0, 'open_amount' => 0];
@@ -200,28 +200,28 @@ try {
                                 </td>
                                 <td>
                                     <div class="d-flex">
-                                        <button class="quick-action-btn action-view" 
-                                                onclick="openQuickView(<?= $client['id'] ?>)" 
+                                        <button class="quick-action-btn action-view"
+                                                onclick="openQuickView(<?= $client['id'] ?>)"
                                                 title="Schnellansicht">
                                             <i class="bi bi-eye"></i>
                                         </button>
-                                        <a href="register_client.php?id=<?= $client['id'] ?>&edit=1" 
-                                           class="quick-action-btn action-edit" 
+                                        <a href="edit_client.php?id=<?= $client['id'] ?>"
+                                           class="quick-action-btn action-edit"
                                            title="Bearbeiten">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="rechnung.php?client_id=<?= $client['id'] ?>" 
-                                           class="quick-action-btn action-invoice" 
+                                        <a href="rechnung.php?client_id=<?= $client['id'] ?>"
+                                           class="quick-action-btn action-invoice"
                                            title="Neue Rechnung">
                                             <i class="bi bi-receipt"></i>
                                         </a>
-                                        <button class="quick-action-btn action-email" 
-                                                onclick="sendEmail(<?= $client['id'] ?>)" 
+                                        <button class="quick-action-btn action-email"
+                                                onclick="sendEmail(<?= $client['id'] ?>)"
                                                 title="E-Mail">
                                             <i class="bi bi-envelope"></i>
                                         </button>
-                                        <button class="quick-action-btn action-delete" 
-                                                onclick="deleteClient(<?= $client['id'] ?>)" 
+                                        <button class="quick-action-btn action-delete"
+                                                onclick="deleteClient(<?= $client['id'] ?>)"
                                                 title="Löschen">
                                             <i class="bi bi-trash"></i>
                                         </button>
@@ -361,7 +361,7 @@ try {
                         return `
                         <div class=\"d-flex\">
                             <button class=\"quick-action-btn action-view\" onclick=\"openQuickView(${id})\" title=\"Schnellansicht\"><i class=\"bi bi-eye\"></i></button>
-                            <a href=\"register_client.php?id=${id}&edit=1\" class=\"quick-action-btn action-edit\" title=\"Bearbeiten\"><i class=\"bi bi-pencil\"></i></a>
+                            <a href=\"edit_client.php?id=${id}\" class=\"quick-action-btn action-edit\" title=\"Bearbeiten\"><i class=\"bi bi-pencil\"></i></a>
                             <a href=\"rechnung.php?client_id=${id}\" class=\"quick-action-btn action-invoice\" title=\"Neue Rechnung\"><i class=\"bi bi-receipt\"></i></a>
                             <button class=\"quick-action-btn action-email\" onclick=\"sendEmail(${id})\" title=\"E-Mail\"><i class=\"bi bi-envelope\"></i></button>
                             <button class=\"quick-action-btn action-delete\" onclick=\"deleteClient(${id})\" title=\"Löschen\"><i class=\"bi bi-trash\"></i></button>
@@ -382,7 +382,7 @@ try {
             const modalEl = document.getElementById('quickViewModal');
             const modal = new bootstrap.Modal(modalEl);
             const contentEl = document.getElementById('quickViewContent');
-            
+
             contentEl.innerHTML = `
                 <div class="text-center py-4">
                     <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Laden...</span></div>
@@ -453,7 +453,7 @@ try {
             notification.style.zIndex = '9999';
             notification.textContent = message;
             document.body.appendChild(notification);
-            
+
             setTimeout(() => notification.remove(), 3000);
         }
     </script>
